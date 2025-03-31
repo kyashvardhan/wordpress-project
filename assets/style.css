@@ -1,0 +1,25 @@
+.gs-slider {
+    position: relative;
+    overflow: hidden;
+}
+.gs-slide {
+    text-align: center;
+    transition: opacity 0.5s ease-in-out;
+}
+.gs-slide img {
+    max-width: 100%;
+    height: auto;
+}
+.gs-prev,
+.gs-next {
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    margin: 0.5em;
+}
+.gs-prev:hover,
+.gs-next:hover {
+    background: #005177;
+}
