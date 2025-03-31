@@ -45,25 +45,59 @@ function gs_register_block() {
         'style'           => 'gs-block-frontend-style',
         'render_callback' => 'gs_render_slideshow_block',
         'attributes'      => array(
-            'siteUrl' => array(
-                'type'    => 'string',
-                'default' => 'https://wptavern.com',
-            ),
-            // Additional attributes (e.g., toggles for metadata or auto-scroll) can be added here.
-        ),
+    'siteUrl' => array(
+        'type'    => 'string',
+        'default' => 'https://wptavern.com',
+    ),
+    'customLinkUrl' => array(
+        'type'    => 'string',
+        'default' => '',
+    ),
+    'customLinkLabel' => array(
+        'type'    => 'string',
+        'default' => '',
+    ),
+    'autoScroll' => array(
+        'type'    => 'boolean',
+        'default' => false,
+    ),
+    'showDate' => array(
+        'type'    => 'boolean',
+        'default' => true,
+    ),
+    'transitionEffect' => array(
+        'type'    => 'string',
+        'default' => 'fade',
+    ),
+),
     ) );
+    
 }
 add_action( 'init', 'gs_register_block' );
 
 // Render callback for the block.
 function gs_render_slideshow_block( $attributes ) {
-    // Get the site URL attribute or default.
-    $site_url = isset( $attributes['siteUrl'] ) ? esc_url( $attributes['siteUrl'] ) : 'https://wptavern.com';
-    // Create a unique ID for each block instance.
-    $unique_id = 'gs-slideshow-' . uniqid();
-    // Output a container with a data attribute for the site URL.
-    return '<div id="' . $unique_id . '" class="gs-slideshow" data-site-url="' . $site_url . '"></div>';
+    $site_url           = ! empty( $attributes['siteUrl'] ) ? esc_url( $attributes['siteUrl'] ) : 'https://wptavern.com';
+    $unique_id          = 'gs-slideshow-' . uniqid();
+    $custom_link_url    = ! empty( $attributes['customLinkUrl'] ) ? esc_url( $attributes['customLinkUrl'] ) : '';
+    $custom_link_label  = ! empty( $attributes['customLinkLabel'] ) ? sanitize_text_field( $attributes['customLinkLabel'] ) : '';
+    $auto_scroll        = ( isset( $attributes['autoScroll'] ) && $attributes['autoScroll'] ) ? 'true' : 'false';
+    $show_date          = ( isset( $attributes['showDate'] ) && $attributes['showDate'] ) ? 'true' : 'false';
+    $transition_effect  = ! empty( $attributes['transitionEffect'] ) ? sanitize_text_field( $attributes['transitionEffect'] ) : 'fade';
+
+    // Output container with new data attribute:
+    $output  = '<div id="' . $unique_id . '" class="gs-slideshow" data-site-url="' . $site_url . '" data-auto-scroll="' . $auto_scroll . '" data-show-date="' . $show_date . '" data-transition-effect="' . $transition_effect . '"></div>';
+
+    if ( $custom_link_url && $custom_link_label ) {
+        $output .= '<div class="gs-custom-link">';
+        $output .= '<a href="' . $custom_link_url . '" target="_blank" rel="noopener noreferrer">' . $custom_link_label . '</a>';
+        $output .= '</div>';
+    }
+
+    return $output;
 }
+
+
 
 // Enqueue the front-end script that powers the slideshow.
 function gs_enqueue_frontend_script() {

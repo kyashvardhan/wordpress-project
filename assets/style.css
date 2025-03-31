@@ -23,3 +23,7 @@
 .gs-next:hover {
     background: #005177;
 }
+
+.gs-slider.fade .gs-slide {
+    transition: opacity 0.5s ease-in-out;
+}
